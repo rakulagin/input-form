@@ -1,0 +1,26 @@
+.block {
+  display: flex;
+  flex-direction: column;
+  // max-width: 400px;
+  width: 100%;
+
+  &:not(last-child) {
+    margin-bottom: 22px;
+  }
+}
+
+.title {
+margin-bottom: 8px;
+font-size: 14px;
+font-weight: 500;
+}
+
+.input {
+  resize: vertical;
+  width: 100%!important;
+  height: auto;
+  border-radius: 4px;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.16);
+}
