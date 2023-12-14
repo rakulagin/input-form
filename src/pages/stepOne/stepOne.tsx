@@ -1,19 +1,33 @@
 import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+
+import { ThunkDispatch } from '@reduxjs/toolkit';
+import { AnyAction } from 'redux';
+import { RootState } from '../../redux/rootReducer';
+import { addClientData } from '../../redux/slices/clientData';
+
+import { changeCurrentPosition } from '../../redux/slices/clientData';
 
 import classNames from 'classnames';
 import { useForm } from "react-hook-form";
+import { ErrorMessage } from '@hookform/error-message';
 import { useNavigate } from 'react-router-dom'
 
 import ProgressBar from '../../components/progressBar/progressBar'
 
-import styles from '../screens.module.scss'
+import styles from './stepOne.module.scss'
 
 const StepOne = () => {
+  const dispatch: ThunkDispatch<RootState, undefined, AnyAction> =
+    useDispatch();
+  const { data } = useSelector(
+    (state: any) => state.inputForm
+  );
   const navigate = useNavigate()
 
-  const { register, handleSubmit, formState: { errors, isValid } } = useForm({ mode: "onChange" });
+  const { register, handleSubmit, formState: { errors, isValid } } = useForm({ mode: "onSubmit" });
 
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedOption, setSelectedOption] = useState('');
   const [isOpen, setIsOpen] = useState(false);
 
   const options = ['Мужской', 'Женский'];
@@ -23,10 +37,23 @@ const StepOne = () => {
     setIsOpen(false);
   };
 
+  const handleNickName = (e: any) => {
+    dispatch(addClientData({ ...data, nickName: e.target.value }))
+  }
+
+  const handleFirstName = (e: any) => {
+    dispatch(addClientData({ ...data, firstName: e.target.value }))
+  }
+
+  const handleSurName = (e: any) => {
+    dispatch(addClientData({ ...data, surName: e.target.value }))
+  }
+
   const onSubmit = (data: any) => {
 
     console.log('data', data)
-    navigate('/steps/step2')
+    // navigate('/steps/step2')
+    // dispatch(changeCurrentPosition(2))
   }
 
   return (
@@ -39,20 +66,22 @@ const StepOne = () => {
           <input
             className={styles.input}
             type="text"
-            placeholder='+7 999 999-99-99'
-          // {...register("name", {
-          //     required: "Обязательное поле",
-          //     minLength: {
-          //         value: 2,
-          //         message: "Минимальная длина символов - 2"
-          //     },
-          //     pattern: {
-          //         value: /^([А-Я]?)?([а-я]{0,14})?$/ig,
-          //         message: "Допускаются только русские буквы"
-          //     }
-          // })}
+            value={data.nickName}
+            placeholder="Пишите..."
+            {...register("nickName", {
+              required: "Обязательное поле",
+              maxLength: {
+                value: 30,
+                message: "Максимальная длина - 30 символов"
+              },
+              pattern: {
+                value: /^[A-Za-z0-9]+$/,
+                message: "Некорректное имя пользователя",
+              },
+              onChange: (e: any) => handleNickName(e),
+            })}
           />
-          {/* {errors.name && <p>123</p>} */}
+          <ErrorMessage errors={errors} name="nickName" render={({ message }) => <p className={styles.errorMessage}>{message}</p>} />
         </div>
 
         <div className={styles.block}>
@@ -60,20 +89,22 @@ const StepOne = () => {
           <input
             className={styles.input}
             type="text"
-            placeholder='+7 999 999-99-99'
-          // {...register("name", {
-          //     required: "Обязательное поле",
-          //     minLength: {
-          //         value: 2,
-          //         message: "Минимальная длина символов - 2"
-          //     },
-          //     pattern: {
-          //         value: /^([А-Я]?)?([а-я]{0,14})?$/ig,
-          //         message: "Допускаются только русские буквы"
-          //     }
-          // })}
+            value={data.firstName}
+            placeholder="Пишите..."
+            {...register("firstName", {
+              required: "Обязательное поле",
+              maxLength: {
+                value: 50,
+                message: "Максимальная длина - 50 символов"
+              },
+              pattern: {
+                value: /^[A-Za-z]+$/,
+                message: "Некорректное имя пользователя",
+              },
+              onChange: (e: any) => handleFirstName(e),
+            })}
           />
-          {/* {errors.name && <p>123</p>} */}
+          <ErrorMessage errors={errors} name="firstName" render={({ message }) => <p className={styles.errorMessage}>{message}</p>} />
         </div>
 
         <div className={styles.block}>
@@ -81,20 +112,22 @@ const StepOne = () => {
           <input
             className={styles.input}
             type="text"
-            placeholder='+7 999 999-99-99'
-          // {...register("name", {
-          //     required: "Обязательное поле",
-          //     minLength: {
-          //         value: 2,
-          //         message: "Минимальная длина символов - 2"
-          //     },
-          //     pattern: {
-          //         value: /^([А-Я]?)?([а-я]{0,14})?$/ig,
-          //         message: "Допускаются только русские буквы"
-          //     }
-          // })}
+            value={data.surName}
+            placeholder="Пишите..."
+            {...register("surName", {
+              required: "Обязательное поле",
+              maxLength: {
+                value: 50,
+                message: "Максимальная длина - 50 символов"
+              },
+              pattern: {
+                value: /^[A-Za-z]+$/,
+                message: "Некорректная фамилия",
+              },
+              onChange: (e: any) => handleSurName(e),
+            })}
           />
-          {/* {errors.name && <p>123</p>} */}
+          <ErrorMessage errors={errors} name="surName" render={({ message }) => <p className={styles.errorMessage}>{message}</p>} />
         </div>
 
         <div className={styles.block}>
@@ -116,14 +149,20 @@ const StepOne = () => {
               </div>
             )}
           </div>
-
+          <input
+           type="hidden" 
+           value={selectedOption} 
+           {
+            ...register('gender',
+            //  { required: 'Обязательное поле' }
+              )} />
+          <ErrorMessage errors={errors} name="gender" render={({ message }) => <p className={styles.errorMessage}>{message}</p>} />
         </div>
 
 
         <div className={styles.btns}>
-          <button onClick={()=>{navigate('/')} }>назад</button>
+          <button onClick={() => { navigate('/') }}>назад</button>
           <input
-            // className={isValid ? "btn btn-white-blue" : "btn btn-disabled"}
             className={styles.button}
             type="submit"
             value="Далее"

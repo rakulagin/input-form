@@ -1,4 +1,11 @@
 import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+
+import { ThunkDispatch } from '@reduxjs/toolkit';
+import { AnyAction } from 'redux';
+import { RootState } from '../../redux/rootReducer';
+
+import { changeCurrentPosition } from '../../redux/slices/clientData';
 
 import classNames from 'classnames';
 import { useForm, Controller } from "react-hook-form";
@@ -10,6 +17,8 @@ import IconTrash from '../../components/icons/icon-trash';
 import styles from '../screens.module.scss'
 
 const StepTwo = () => {
+  const dispatch: ThunkDispatch<RootState, undefined, AnyAction> =
+  useDispatch();
   const navigate = useNavigate()
 
   const { register,control, handleSubmit, formState: { errors, isValid } } = useForm({ mode: "onChange" });
@@ -32,6 +41,12 @@ const StepTwo = () => {
 
     console.log('data', data)
     navigate('/steps/step3')
+    dispatch(changeCurrentPosition(3))
+  }
+
+  const handleBackClick = () => {
+    navigate('/steps/step1')
+    dispatch(changeCurrentPosition(1))
   }
 
   return (
@@ -95,7 +110,7 @@ const StepTwo = () => {
         Checkbox 3
       </label>
 
-      <div className="input__block">
+      {/* <div className="input__block">
                     <h2 className="input__question">Ваш пол</h2>
                     <label className="input__radio">
                         <input
@@ -116,11 +131,11 @@ const StepTwo = () => {
                         <span className="input__answer">Женщина</span>
                     </label>
                     {errors.gender && <p>Обязательное поле</p>}
-                </div>
+                </div> */}
 
 
         <div className={styles.btns}>
-          <button onClick={() => { navigate('/steps/step1') }}>назад</button>
+          <button onClick={handleBackClick}>назад</button>
           <input
             // className={isValid ? "btn btn-white-blue" : "btn btn-disabled"}
             className={styles.button}

@@ -12,7 +12,13 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 const initialState = {
 	data: {
-		phone: ''
+		phone: '',
+		email: '',
+		nickName: '',
+		firstName: '',
+		surName: '',
+		gender: '',
+
 	},
   currentPosition: 1,
 };

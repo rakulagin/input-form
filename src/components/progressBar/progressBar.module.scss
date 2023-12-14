@@ -3,7 +3,27 @@
   background-color: rgba(0, 0, 0, 0.08);
   position: relative;
   margin-bottom: 97px;
+  display: flex;
 }
+
+.bar2 {
+  height: 8px;
+
+  position: relative;
+  margin-bottom: 97px;
+  display: flex;
+  background: linear-gradient(to right, blue 50%, rgba(0, 0, 0, 0.08) 51%);
+}
+
+.bar3 {
+  height: 8px;
+
+  position: relative;
+  margin-bottom: 97px;
+  display: flex;
+  background: blue;
+}
+
 
 .dot {
   height: 16px;
@@ -23,6 +43,34 @@
 
   &:last-child {
     right: -7px;
+  }
+}
+
+.current {
+  background-color: blue;
+  &::before {
+    content: '';
+    height: 5px; /* Выберите желаемый размер кружка */
+    width: 5px;  /* Выберите желаемый размер кружка */
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 48%;
+    left: 48%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.complete {
+  background-color: blue;
+  &::before {
+    content: '\2713'; /* Юникод символ для галочки (✓) */
+  font-size: 12px; /* Размер галочки */
+  color: white; /* Цвет галочки */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   }
 }
 
